@@ -1,8 +1,7 @@
-const discord = require("discord.js");
+
+
 
 module.exports.run = async (bot, message, arg) => {
-
-
     var username = message.author.username;
     var userdiscriminator = message.author.disciminator;
 
@@ -26,7 +25,7 @@ module.exports.run = async (bot, message, arg) => {
         .setTitle("hoi" + message.author.username)
         .setFooter("suport kanaal wordt aangemaakt");
 
-        message.channel.send(embedcreateticket);
+    message.channel.send(embedcreateticket);
 
 
 
