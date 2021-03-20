@@ -1,40 +1,50 @@
-const dicsord = require("discord.js");
-const botconfig = require("./botconfig.json");
+const Discord = require('discord.js');
+const fs = require('fs');
+const { prefix, token } = require('./config.json');
 
-const bot = new dicsord.Client();
+const bot = new Discord.Client();
+bot.commands = new Discord.Collection();
 
+const cmds = fs.readdirSync(`./cmds`).filter(file => file.endsWith('.js'));
+for(const file of cmds){
+    const cmd = require(`./cmds/${file}`);
 
-bot.on("ready", async () => {
+    bot.commands.set(cmd.name, cmd);
+}
 
-    console.log(`${bot.user.username} is online`)
+bot.on('message', async msg => {
+    if(msg.author.bot || !msg.content.startsWith(prefix)) return;
+    const args = msg.content.slice(prefix.length).split(/ +/);
+    const cmdName = args.shift().toLowerCase();
 
-    bot.user.setActivity("testing", {type: "PLAYING"});
+    const cmd = bot.commands.get(cmdName)
+        || bot.commands.find(cmd => cmd.aliases && cmd.aliases.includes(cmdName));
 
-});
+    if(!cmd) return msg.reply(`\`${cmd}\` is not a valid command.`);
 
-
-bot.on("message", async message => {
-
-    if(message.author.bot) return;
- 
-
-    if(message.channel.type === "dm") return;
-
-    var prefix = botconfig.prefix;
-
-    var messageArray = message.content.split(" ");
-    
-    var comand = messageArray[0];
-
-    var arguments = messageArray.slice(1);
-
-    if(comand ===`${prefix}hallo`){
-
-        return message.channel.send("hallo");
-    
+    try{
+        cmd.execute(bot, msg, args);
+    }catch(err){
+        msg.reply(`there was an error in the console.`);
+        console.log(err);
     }
 
-});
+    // const cmd = args.shift().toLowerCase();
 
+    // try{
+    //     bot.commands.get(cmd).execute(bot, msg, args);
+    // }catch(e){
+    //     msg.reply(`there was an error in the console.`);
+    //     console.log(e);
+    // }
+})
+
+bot.on('ready', () => {
+    cmds.forEach(cmd => {
+        console.log(`${cmd} loaded.`)
+    })
+
+    console.log(`${bot.user.tag} successfully logged in!`)
+})
 
 bot.login(process.env.token);
