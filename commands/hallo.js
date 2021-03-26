@@ -1,8 +1,7 @@
 module.exports = {
-    name: "hallo",
-    description: "(check the bot s latency",
-    async execute(bot, msg, args){
-        msg.channel.send(`hallo`)
-
-    },
+    name: 'hallo',
+    description: "this is a ping command!",
+    execute(message, args){
+        message.channel.send('pong!');
+    }
 }
