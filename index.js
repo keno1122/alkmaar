@@ -37,6 +37,10 @@ client.on('message', message =>{
     if(command === 'hallo'){
         client.commands.get('hallo').execute(message, args);
     }  
+
+    if(command === 'suggestion'){
+        client.commands.get('suggestion').execute(message, args);
+    }  
 });
  
 client.login(process.env.token);
