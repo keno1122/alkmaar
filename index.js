@@ -38,7 +38,7 @@ client.on('message', message =>{
         client.commands.get('hallo').execute(message, args);
     }  
 
-    if(command === 'suggestion'){
+    if(command === 'suggest'){
         client.commands.get('suggestion').execute(message, args);
     }  
 });
